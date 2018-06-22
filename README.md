@@ -1,15 +1,23 @@
 # Azurlane-scripts-autopatcher
-A tool to automatically modify *Azurlane scripts* and generate several modified scripts, a.k.a *modded scripts* to obtain unfair gameplay.
+Automated tool that will save your time to modify Azurlane scripts, resulting several modified scripts such as:
+- godmode
+- godmode-cd
+- godmode-dmg
+- godmode-dmg-cd
+- godmode-weakenemy
+- weakenemy
 
 ## Download
-You can grab the binary from the [releases page](https://github.com/k0np4ku/Azurlane-scripts-autopatcher/releases), also take a look at [Azurlane-LuaHelper](https://github.com/k0np4ku/Azurlane-LuaHelper) if you want to do it **manually**.
+You can grab the binary from the [releases page](https://github.com/k0np4ku/Azurlane-scripts-autopatcher/releases).
+
+[Azurlane-LuaHelper](https://github.com/k0np4ku/Azurlane-LuaHelper) exists if you want to do everything manually, or if you don't want to diry your hands and only curious with what's inside.
 
 ## Requirements
 1. Python 3.0 or newer
 2. NET Framework 3.5 or newer
 
 ## Usage and Examples
-Open `Azurlane.exe` and select *Azurlane AssetBundle* file named **scripts**, or by command `Azurlane.exe <path-to-scripts>`
+Open `Azurlane.exe` and select *Azurlane AssetBundle file* named **scripts**, or by command `Azurlane.exe <path-to-scripts>`
 
 You can obtain Azurlane AssetBundle file named scripts from:
 - Japan: Android/data/com.YoStarJP.AzurLane/files/AssetBundles
@@ -32,3 +40,13 @@ $ azurlane scripts-jp
 Everything is ok, we're done.
 Press any key to exit.
 ```
+
+## Issues
+### System Locale
+The tool will not working properly if your System Locale is not set to English.
+
+### Game stuck on loading
+This issue will happens if you're playing China (bilibili) version of the game, simply remove these lines to fix this issue.
+
+`Assembly-CSharp.dll > LuaScriptMgr > Load`
+![DnSpy](https://raw.githubusercontent.com/k0np4ku/Azurlane-scripts-autopatcher/master/DnSpy.png)
