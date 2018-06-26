@@ -6,81 +6,72 @@ namespace Azurlane
 {
     internal static class Lua
     {
-        internal static void Initialize(string lua, Tasks tasks)
+        internal static void Run(string path, Tasks task)
         {
             try
             {
-                if (tasks == Tasks.Decrypt || tasks == Tasks.Encrypt)
+                var bytes = File.ReadAllBytes(path);
+                if (task == Tasks.Decrypt || task == Tasks.Encrypt)
                 {
-                    var bytes = File.ReadAllBytes(lua);
-                    var reader = new BinaryReader(new MemoryStream(bytes));
-
-                    var magic = reader.ReadBytes(3);
-                    var version = reader.ReadByte();
-                    var bits = reader.ReadUleb128();
-                    var is_stripped = ((bits & 2u) != 0u);
-
-                    if (!is_stripped)
+                    using (var reader = new BinaryReader(new MemoryStream(bytes)))
                     {
-                        var length = reader.ReadUleb128();
-                        var name = Encoding.UTF8.GetString(reader.ReadBytes((int)length));
-                    }
+                        var magic = reader.ReadBytes(3);
+                        var version = reader.ReadByte();
+                        var bits = reader.ReadUleb128();
 
-                    while (reader.BaseStream.Position < reader.BaseStream.Length)
-                    {
-                        var size = reader.ReadUleb128();
-
-                        if (size == 0)
-                            break;
-
-                        var next = reader.BaseStream.Position + size;
-                        bits = reader.ReadByte();
-
-                        var arguments_count = reader.ReadByte();
-                        var framesize = reader.ReadByte();
-                        var upvalues_count = reader.ReadByte();
-                        var complex_constants_count = reader.ReadUleb128();
-                        var numeric_constants_count = reader.ReadUleb128();
-                        var instructions_count = reader.ReadUleb128();
-
-                        var start = (int)reader.BaseStream.Position;
-                        start += 4;
-
-                        var v2 = 0;
-                        do
+                        var is_stripped = ((bits & 2u) != 0u);
+                        if (!is_stripped)
                         {
-                            if (tasks == Tasks.Encrypt)
+                            var length = reader.ReadUleb128();
+                            var name = Encoding.UTF8.GetString(reader.ReadBytes((int)length));
+                        }
+
+                        while (reader.BaseStream.Position < reader.BaseStream.Length)
+                        {
+                            var size = reader.ReadUleb128();
+
+                            if (size == 0)
+                                break;
+
+                            var next = reader.BaseStream.Position + size;
+                            bits = reader.ReadByte();
+
+                            var arguments_count = reader.ReadByte();
+                            var framesize = reader.ReadByte();
+                            var upvalues_count = reader.ReadByte();
+                            var complex_constants_count = reader.ReadUleb128();
+                            var numeric_constants_count = reader.ReadUleb128();
+                            var instructions_count = reader.ReadUleb128();
+                            var start = (int)reader.BaseStream.Position;
+
+                            if (task == Tasks.Encrypt)
                             {
                                 bytes[3] = 0x80;
-                                var v3 = bytes[start - 4];
-                                start += 4;
-                                var v4 = bytes[start - 7] ^ v2++;
-                                bytes[start - 8] = (byte)(Properties.Resources.Lock[v3] ^ v4);
+                                bytes = Lock(start, bytes, (int)instructions_count);
                             }
                             else
                             {
                                 bytes[3] = 2;
-                                var v3 = bytes[start - 4];
-                                start += 4;
-                                var v4 = bytes[start - 7] ^ v3 ^ (v2++ & 0xFF);
-                                bytes[start - 8] = Properties.Resources.Unlock[v4];
+                                bytes = Unlock(start, bytes, (int)instructions_count);
                             }
+
+                            reader.BaseStream.Position = next;
                         }
-                        while (v2 != (int)instructions_count);
-                        reader.BaseStream.Position = next;
                     }
-                    File.WriteAllBytes(lua, bytes);
+                    File.WriteAllBytes(path, bytes);
                 }
-                else if (tasks == Tasks.Decompile || tasks == Tasks.Recompile)
-                    Utils.Command(tasks == Tasks.Decompile ? $"python main.py -f \"{lua}\" -o \"{lua}\"" : $"luajit.exe -b \"{lua}\" \"{lua}\"");
+                else if (task == Tasks.Decompile || task == Tasks.Recompile)
+                {
+                    Utils.Command(task == Tasks.Decompile ? $"python main.py -f \"{path}\" -o \"{path}\"" : $"luajit.exe -b \"{path}\" \"{path}\"");
+                }
             }
             catch (Exception e)
             {
-                Console.Write("<exception-detected>");
+                Utils.ExceptionLogger($"Exception detected during {(task == Tasks.Decrypt ? "decrypting" : task == Tasks.Encrypt ? "encrypting" : task == Tasks.Decompile ? "decompiling" : "recompiling")} {Path.GetFileName(path)}", e);
             }
         }
 
-        internal static uint ReadUleb128(this BinaryReader reader)
+        private static uint ReadUleb128(this BinaryReader reader)
         {
             uint value = reader.ReadByte();
             if (value >= 0x80)
@@ -97,6 +88,38 @@ namespace Azurlane
                 }
             }
             return value;
+        }
+
+        private static byte[] Lock(int start, byte[] bytes, int count)
+        {
+            var result = start;
+            result += 4;
+            var v2 = 0;
+            do
+            {
+                var v3 = bytes[result - 4];
+                result += 4;
+                var v4 = bytes[result - 7] ^ v2++;
+                bytes[result - 8] = (byte)(Properties.Resources.Lock[v3] ^ v4);
+            }
+            while (v2 != count);
+            return bytes;
+        }
+
+        private static byte[] Unlock(int start, byte[] bytes, int count)
+        {
+            var result = start;
+            result += 4;
+            var v2 = 0;
+            do
+            {
+                var v3 = bytes[result - 4];
+                result += 4;
+                var v4 = bytes[result - 7] ^ v3 ^ (v2++ & 0xFF);
+                bytes[result - 8] = Properties.Resources.Unlock[v4];
+            }
+            while (v2 != count);
+            return bytes;
         }
     }
 }

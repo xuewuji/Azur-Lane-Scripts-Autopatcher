@@ -16,12 +16,11 @@ namespace Azurlane
 
     internal class Program
     {
+        internal static int ExceptionCount = 0;
+
         [STAThread]
         private static void Main(string[] args)
         {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
-            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-
             if (args.Length > 1)
             {
                 Console.WriteLine(@"Invalid argument, usage: Azurlane.exe <path-to-scripts>");
@@ -85,17 +84,10 @@ namespace Azurlane
 
             foreach (var mod in listOfMod)
             {
-                try
-                {
-                    if (File.Exists(PathMgr.Temp(mod)))
-                        File.Delete(PathMgr.Temp(mod));
-                    if (Directory.Exists(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod)))
-                        Utils.DeleteDirectory(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod));
-                }
-                catch (Exception e)
-                {
-                    Console.Write("<exception-detected>");
-                }
+                if (File.Exists(PathMgr.Temp(mod)))
+                    File.Delete(PathMgr.Temp(mod));
+                if (Directory.Exists(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod)))
+                    Utils.DeleteDirectory(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod));
             }
 
             try
@@ -104,61 +96,62 @@ namespace Azurlane
 
                 Console.Write("[+] Copying AssetBundle to temp workspace...");
                 File.Copy(args[0], PathMgr.Temp(fileName), true);
-                Console.Write("<done>");
+                Console.Write(" <done>");
                 Console.WriteLine();
 
                 Console.Write("[+] Decrypting and Unpacking AssetBundle...");
-                AssetBundle.Initialize(PathMgr.Temp(fileName), Tasks.Decrypt);
-                AssetBundle.Initialize(PathMgr.Temp(fileName), Tasks.Unpack);
-                Console.Write("<done>");
+                AssetBundle.Run(PathMgr.Temp(fileName), Tasks.Decrypt);
+                AssetBundle.Run(PathMgr.Temp(fileName), Tasks.Unpack);
+                Console.Write(" <done>");
                 Console.WriteLine();
 
-                Console.Write($"[+] Decrypting and Decompiling Lua");
+                Console.Write($"[+] Decrypting and Decompiling Lua...");
                 foreach (var lua in listOfLua)
                 {
-                    Console.Write($"...{index}/{listOfLua.Length}");
+                    Console.Write($" {index}/{listOfLua.Length}");
 
-                    Lua.Initialize(PathMgr.Lua(fileName, lua), Tasks.Decrypt);
-                    Lua.Initialize(PathMgr.Lua(fileName, lua), Tasks.Decompile);
+                    Lua.Run(PathMgr.Lua(fileName, lua), Tasks.Decrypt);
+                    Lua.Run(PathMgr.Lua(fileName, lua), Tasks.Decompile);
 
                     if (index == listOfLua.Length)
-                        Console.Write("...<done>");
+                        Console.Write(" <done>");
 
                     index++;
                 }
                 Console.WriteLine();
                 index = 1;
 
-                Console.Write($"[+] Cloning Lua and AssetBundle");
+                Console.Write($"[+] Cloning Lua and AssetBundle...");
                 foreach (var mod in listOfMod)
                 {
-                    Console.Write($"...{index}/{listOfMod.Length}");
+                    Console.Write($" {index}/{listOfMod.Length}");
 
                     try
                     {
                         if (!Directory.Exists(PathMgr.Lua(mod)))
                             Directory.CreateDirectory(PathMgr.Lua(mod));
-                        foreach (var file in Directory.GetFiles(PathMgr.Lua(fileName), "*.*", SearchOption.AllDirectories))
-                            File.Copy(file, PathMgr.Lua(mod, Path.GetFileName(file)), true);
+
+                        foreach (var lua in listOfLua)
+                            File.Copy(PathMgr.Lua(fileName, lua), PathMgr.Lua(mod, lua), true);
                     }
                     catch (Exception e)
                     {
-                        Console.Write("<exception-detected>");
+                        Utils.ExceptionLogger("Exception detected during cloning lua and assetbundle", e);
                     }
                     File.Copy(PathMgr.Temp(fileName), PathMgr.Temp(mod), true);
 
                     if (index == listOfMod.Length)
-                        Console.Write("...<done>");
+                        Console.Write(" <done>");
 
                     index++;
                 }
                 Console.WriteLine();
                 index = 1;
 
-                Console.Write("[+] Rewriting Lua");
+                Console.Write("[+] Rewriting Lua...");
                 foreach (var mod in listOfMod)
                 {
-                    Console.Write($"...{index}/{listOfMod.Length}");
+                    Console.Write($" {index}/{listOfMod.Length}");
 
                     foreach (var lua in listOfLua)
                     {
@@ -192,100 +185,77 @@ namespace Azurlane
                             Write.WeakEnemy(PathMgr.Lua(mod, lua), 10);
                         }
                     }
-
                     if (index == listOfMod.Length)
-                        Console.Write("...<done>");
+                        Console.Write(" <done>");
 
                     index++;
                 }
                 Console.WriteLine();
                 index = 1;
 
-                Console.Write("[+] Recompiling and Encypting Lua");
+                Console.Write("[+] Recompiling and Encypting Lua...");
                 foreach (var mod in listOfMod)
                 {
-                    Console.Write($"...{index}/{listOfMod.Length}");
+                    Console.Write($" {index}/{listOfMod.Length}");
 
                     foreach (var lua in listOfLua)
                     {
-                        Lua.Initialize(PathMgr.Lua(mod, lua), Tasks.Recompile);
-                        Lua.Initialize(PathMgr.Lua(mod, lua), Tasks.Encrypt);
+                        Lua.Run(PathMgr.Lua(mod, lua), Tasks.Recompile);
+                        Lua.Run(PathMgr.Lua(mod, lua), Tasks.Encrypt);
                     }
 
                     if (index == listOfMod.Length)
-                        Console.Write("...<done>");
+                        Console.Write(" <done>");
 
                     index++;
                 }
                 Console.WriteLine();
                 index = 1;
 
-                Console.Write("[+] Repacking and Encrypting AssetBundle");
+                Console.Write("[+] Repacking & encrypting assetbundle...");
                 foreach (var mod in listOfMod)
                 {
-                    Console.Write($"...{index}/{listOfMod.Length}");
+                    Console.Write($" {index}/{listOfMod.Length}");
 
-                    AssetBundle.Initialize(PathMgr.Temp(mod), Tasks.Repack);
-                    AssetBundle.Initialize(PathMgr.Temp(mod), Tasks.Encrypt);
+                    AssetBundle.Run(PathMgr.Temp(mod), Tasks.Repack);
+                    AssetBundle.Run(PathMgr.Temp(mod), Tasks.Encrypt);
 
                     if (index == listOfMod.Length)
-                        Console.Write("...<done>");
+                        Console.Write(" <done>");
 
                     index++;
                 }
                 Console.WriteLine();
                 index = 1;
 
-                Console.Write("[+] Copying all modified AssetBundle to original location");
-                foreach (var mod in listOfMod)
-                {
-                    Console.Write($"...{index}/{listOfMod.Length}");
-
-                    try
-                    {
-                        if (File.Exists(Path.Combine(filePath, mod)))
-                            File.Delete(Path.Combine(filePath, mod));
-
-                        File.Copy(PathMgr.Temp(mod), Path.Combine(filePath, mod), true);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Write("<exception-detected>");
-                    }
-
-                    if (index == listOfMod.Length)
-                        Console.Write("...<done>");
-
-                    index++;
-                }
-                Console.WriteLine();
-                index = 1;
-            }
-            finally
-            {
                 Console.Write("[+] Cleaning...");
+                foreach (var mod in listOfMod)
+                {
+                    if (File.Exists(Path.Combine(filePath, mod)))
+                        File.Delete(Path.Combine(filePath, mod));
 
+                    File.Copy(PathMgr.Temp(mod), Path.Combine(filePath, mod), true);
+                }
                 if (File.Exists(PathMgr.Temp(fileName)))
                     File.Delete(PathMgr.Temp(fileName));
-
                 if (Directory.Exists(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), fileName)))
                     Utils.DeleteDirectory(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), fileName));
 
                 foreach (var mod in listOfMod)
                 {
-                    try
-                    {
-                        if (File.Exists(PathMgr.Temp(mod)))
-                            File.Delete(PathMgr.Temp(mod));
-                        if (Directory.Exists(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod)))
-                            Utils.DeleteDirectory(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod));
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Write("<exception-detected>");
-                    }
+                    if (File.Exists(PathMgr.Temp(mod)))
+                        File.Delete(PathMgr.Temp(mod));
+                    if (Directory.Exists(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod)))
+                        Utils.DeleteDirectory(Path.Combine(PathMgr.Temp("Unity_Assets_Files"), mod));
                 }
-                
+                Console.Write(" <done>\n");
+                Console.WriteLine();
+            }
+            finally
+            {
+                if (ExceptionCount != 0)
+                    Console.WriteLine("Exception Detected, please check Logs.txt");
+
                 Console.WriteLine("Press any key to exit.");
                 Console.ReadLine();
             }

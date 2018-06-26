@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 
 namespace Azurlane
 {
@@ -9,7 +10,7 @@ namespace Azurlane
             if (path != null && !Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            return path == null ? System.Environment.CurrentDirectory : Path.Combine(System.Environment.CurrentDirectory, path);
+            return path == null ? Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) : Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), path);
         }
 
         internal static string Lua(string name) => Path.Combine(Temp("Unity_Assets_Files"), $@"{name}\CAB-android");

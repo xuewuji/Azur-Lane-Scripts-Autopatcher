@@ -10,29 +10,23 @@ namespace Azurlane
 
         static AssetBundle()
         {
-            if (Instance != null)
-                return;
-
-            Instance = Activator.CreateInstance(Assembly.Load(Properties.Resources.Salt).GetType("LL.Salt"));
+            if (Instance == null)
+                Instance = Activator.CreateInstance(Assembly.Load(Properties.Resources.Salt).GetType("LL.Salt"));
         }
 
-        internal static void Initialize(string assetbundle, Tasks tasks)
+        internal static void Run(string path, Tasks task)
         {
-            try
+            if (task == Tasks.Decrypt || task == Tasks.Encrypt)
             {
-                if (tasks == Tasks.Decrypt || tasks == Tasks.Encrypt)
-                {
-                    File.WriteAllBytes(assetbundle, (byte[])Instance.GetType().GetMethod("Make", BindingFlags.Static | BindingFlags.Public).Invoke(Instance, new object[]
-                    {
-                        File.ReadAllBytes(assetbundle), tasks == Tasks.Encrypt
-                    }));
-                }
-                else if (tasks == Tasks.Unpack || tasks == Tasks.Repack)
-                    Utils.Command($"UnityEX.exe {(tasks == Tasks.Unpack ? "export" : "import")} \"{assetbundle}\"");
+                var bytes = File.ReadAllBytes(path);
+                var method = Instance.GetType().GetMethod("Make", BindingFlags.Static | BindingFlags.Public);
+                bytes = (byte[])method.Invoke(Instance, new object[] { bytes, task == Tasks.Encrypt });
+
+                File.WriteAllBytes(path, bytes);
             }
-            catch (Exception e)
+            else if (task == Tasks.Unpack || task == Tasks.Repack)
             {
-                Console.Write("<exception-detected>");
+                Utils.Command(string.Format("UnityEX.exe {0} \"{1}\"", task == Tasks.Unpack ? "export" : "import", path));
             }
         }
     }

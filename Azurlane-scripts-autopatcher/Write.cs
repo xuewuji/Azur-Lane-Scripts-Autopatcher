@@ -1,24 +1,23 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Azurlane
 {
-    public static class Write
+    internal static class Write
     {
-        public static void Rewrite(string path, string pattern, string replacement)
+        internal static void Cooldown(string lua, int value)
         {
-            try
-            {
-                File.WriteAllText(path, Regex.Replace(File.ReadAllText(path), pattern, replacement));
-            }
-            catch (Exception e)
-            {
-                Console.Write("<exception-detected>");
-            }
+            if (lua.Contains("weapon_property"))
+                Rewrite(lua, "reload_max = .*", $"reload_max = {value.ToString()},");
         }
 
-        public static void GodMode(string lua)
+        internal static void Damage(string lua, int value)
+        {
+            if (lua.Contains("weapon_property"))
+                Rewrite(lua, "damage = .*", $"damage = {value.ToString()},");
+        }
+
+        internal static void GodMode(string lua)
         {
             if (lua.Contains("enemy_data_statistics"))
             {
@@ -35,19 +34,9 @@ namespace Azurlane
             }
         }
 
-        public static void Damage(string lua, int value)
-        {
-            if (lua.Contains("weapon_property"))
-                Rewrite(lua, "damage = .*", $"damage = {value.ToString()},");
-        }
+        internal static void Rewrite(string path, string pattern, string replacement) => File.WriteAllText(path, Regex.Replace(File.ReadAllText(path), pattern, replacement));
 
-        public static void Cooldown(string lua, int value)
-        {
-            if (lua.Contains("weapon_property"))
-                Rewrite(lua, "reload_max = .*", $"reload_max = {value.ToString()},");
-        }
-
-        public static void WeakEnemy(string lua, int value)
+        internal static void WeakEnemy(string lua, int value)
         {
             if (lua.Contains("enemy_data_statistics"))
             {
