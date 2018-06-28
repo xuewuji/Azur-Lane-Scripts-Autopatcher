@@ -45,7 +45,7 @@ namespace Azurlane
         {
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Logs.txt");
 
-            if (File.Exists(path))
+            if (!File.Exists(path))
                 File.WriteAllText(path, string.Empty);
 
             using (var streamWriter = new StreamWriter(path, true))
