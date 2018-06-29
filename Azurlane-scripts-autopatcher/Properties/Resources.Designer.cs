@@ -61,6 +61,47 @@ namespace Azurlane.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [Common]
+        ///CreateWeakEnemy=True
+        ///CreateGodMode=True
+        ///CreateGodModeCooldown=True
+        ///CreateGodModeDamage=True
+        ///CreateGodModeDamageCooldown=True
+        ///CreateGodModeWeakEnemy=True
+        ///
+        ///[Player]
+        ///ReplaceSkin=False
+        ///
+        ///[Weapon]
+        ///Damage=300
+        ///#Miliseconds
+        ///ReloadMax=120
+        ///
+        ///[Enemy]
+        ///AntiAir=1
+        ///AntiAirGrowth=1
+        ///Antisub=Ignore
+        ///AntisubGrowth=Ignore
+        ///Armor=Ignore
+        ///ArmorGrowth=Ignore
+        ///Cannon=Ignore
+        ///CannonGrowth=Ignore
+        ///Evasion=Ignore
+        ///EvasionGrowth=Ignore
+        ///Hit=Ignore
+        ///HitGrowth=Ignore
+        ///Hp=50
+        ///HpGrowth=100
+        ///Luck=Ignore
+        ///LuckGrowth [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Azurlane {
+            get {
+                return ResourceManager.GetString("Azurlane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] Lock {

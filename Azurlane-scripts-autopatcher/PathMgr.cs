@@ -5,20 +5,27 @@ namespace Azurlane
 {
     internal static class PathMgr
     {
-        internal static string Environment(string path = null)
+        static PathMgr()
         {
-            if (path != null && !Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            if (!Directory.Exists(Thirdparty()))
+            {
+                Directory.CreateDirectory(Thirdparty());
+            }
 
-            return path == null ? Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) : Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), path);
+            if (!Directory.Exists(Temporary()))
+            {
+                Directory.CreateDirectory(Temporary());
+            }
         }
 
-        internal static string Lua(string name) => Path.Combine(Temp("Unity_Assets_Files"), $@"{name}\CAB-android");
+        internal static string Local(string path = null) => path != null ? Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), path) : Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+        internal static string Lua(string name) => Path.Combine(Temporary("Unity_Assets_Files"), string.Format("{0}\\CAB-android", name));
 
         internal static string Lua(string name, string lua) => Path.Combine(Lua(name), lua);
 
-        internal static string Temp(string path = null) => path != null ? Path.Combine(Environment("Temp"), path) : Environment("Temp");
+        internal static string Temporary(string path = null) => path != null ? Path.Combine(Local("Temporary"), path) : Local("Temporary");
 
-        internal static string Thirdparty(string path = null) => path != null ? Path.Combine(Environment("Thirdparty"), path) : Environment("Thirdparty");
+        internal static string Thirdparty(string path = null) => path != null ? Path.Combine(Local("Thirdparty"), path) : Local("Thirdparty");
     }
 }

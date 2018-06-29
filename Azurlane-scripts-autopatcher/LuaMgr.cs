@@ -4,13 +4,17 @@ using System.Text;
 
 namespace Azurlane
 {
-    internal static class Lua
+    internal static class LuaMgr
     {
-        internal static void Run(string path, Tasks task)
+        internal static void Execute(string path, Tasks task)
         {
             try
             {
                 var bytes = File.ReadAllBytes(path);
+
+                if ((bytes[3] == 0x02 && task == Tasks.Decrypt) || (bytes[3] == 0x80 && task == Tasks.Encrypt))
+                    return;
+
                 if (task == Tasks.Decrypt || task == Tasks.Encrypt)
                 {
                     using (var reader = new BinaryReader(new MemoryStream(bytes)))
@@ -44,12 +48,12 @@ namespace Azurlane
                             var instructions_count = reader.ReadUleb128();
                             var start = (int)reader.BaseStream.Position;
 
-                            if (task == Tasks.Encrypt)
+                            if (bytes[3] == 0x02 && task == Tasks.Encrypt)
                             {
                                 bytes[3] = 0x80;
                                 bytes = Lock(start, bytes, (int)instructions_count);
                             }
-                            else
+                            else if (bytes[3] == 0x80 && task == Tasks.Decrypt)
                             {
                                 bytes[3] = 2;
                                 bytes = Unlock(start, bytes, (int)instructions_count);
@@ -67,8 +71,24 @@ namespace Azurlane
             }
             catch (Exception e)
             {
-                Utils.ExceptionLogger($"Exception detected during {(task == Tasks.Decrypt ? "decrypting" : task == Tasks.Encrypt ? "encrypting" : task == Tasks.Decompile ? "decompiling" : "recompiling")} {Path.GetFileName(path)}", e);
+                Utils.Log($"Exception detected during {(task == Tasks.Decrypt ? "decrypting" : task == Tasks.Encrypt ? "encrypting" : task == Tasks.Decompile ? "decompiling" : "recompiling")} {Path.GetFileName(path)}", e);
             }
+        }
+
+        private static byte[] Lock(int start, byte[] bytes, int count)
+        {
+            var result = start;
+            result += 4;
+            var v2 = 0;
+            do
+            {
+                var v3 = bytes[result - 4];
+                result += 4;
+                var v4 = bytes[result - 7] ^ v2++;
+                bytes[result - 8] = (byte)(Properties.Resources.Lock[v3] ^ v4);
+            }
+            while (v2 != count);
+            return bytes;
         }
 
         private static uint ReadUleb128(this BinaryReader reader)
@@ -88,22 +108,6 @@ namespace Azurlane
                 }
             }
             return value;
-        }
-
-        private static byte[] Lock(int start, byte[] bytes, int count)
-        {
-            var result = start;
-            result += 4;
-            var v2 = 0;
-            do
-            {
-                var v3 = bytes[result - 4];
-                result += 4;
-                var v4 = bytes[result - 7] ^ v2++;
-                bytes[result - 8] = (byte)(Properties.Resources.Lock[v3] ^ v4);
-            }
-            while (v2 != count);
-            return bytes;
         }
 
         private static byte[] Unlock(int start, byte[] bytes, int count)

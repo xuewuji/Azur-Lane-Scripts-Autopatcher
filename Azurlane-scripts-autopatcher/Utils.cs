@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Azurlane
 {
@@ -26,7 +26,6 @@ namespace Azurlane
         {
             foreach (var directory in Directory.GetDirectories(path))
                 DeleteDirectory(directory);
-
             try
             {
                 Directory.Delete(path, true);
@@ -41,14 +40,11 @@ namespace Azurlane
             }
         }
 
-        internal static void ExceptionLogger(string message, Exception exception)
+        internal static void Log(string message, Exception exception)
         {
-            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Logs.txt");
-
-            if (!File.Exists(path))
-                File.WriteAllText(path, string.Empty);
-
-            using (var streamWriter = new StreamWriter(path, true))
+            if (!File.Exists(PathMgr.Local("Logs.txt")))
+                File.WriteAllText(PathMgr.Local("Logs.txt"), string.Empty);
+            using (var streamWriter = new StreamWriter(PathMgr.Local("Logs.txt"), true))
             {
                 streamWriter.WriteLine("=== START =================================================================================");
                 streamWriter.WriteLine(message);
@@ -58,7 +54,6 @@ namespace Azurlane
                 streamWriter.WriteLine("=== END ===================================================================================");
                 streamWriter.WriteLine();
             }
-
             Program.ExceptionCount++;
         }
     }
