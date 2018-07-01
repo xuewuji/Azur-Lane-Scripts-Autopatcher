@@ -217,9 +217,10 @@ namespace Azurlane
                 {
                     try
                     {
-                        action.Invoke();
                         if (index != 1)
                             index = 1;
+
+                        action.Invoke();
                     }
                     catch (Exception e)
                     {

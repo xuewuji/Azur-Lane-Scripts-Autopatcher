@@ -47,6 +47,12 @@ namespace Azurlane
             }
         }
 
+        internal static bool IsAssetBundleValid(string path)
+        {
+            var bytes = File.ReadAllBytes(path);
+            return Compare(bytes, Encrypted);
+        }
+
         private static bool Compare(byte[] b1, byte[] b2)
         {
             for (var i = 0; i < b2.Length; i++)
@@ -55,12 +61,6 @@ namespace Azurlane
                     return false;
             }
             return true;
-        }
-
-        internal static bool IsAssetBundleValid(string path)
-        {
-            var bytes = File.ReadAllBytes(path);
-            return Compare(bytes, Encrypted);
         }
     }
 }

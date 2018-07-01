@@ -17,7 +17,7 @@ namespace Azurlane
                 ListOfLua = new List<string>()
                 {
                    "aircraft_template.lua.txt",
-                    "enemy_data_statistics.lua.txt"
+                   "enemy_data_statistics.lua.txt"
                 };
             }
 
@@ -27,13 +27,23 @@ namespace Azurlane
 
         internal static Dictionary<string, string> Initialization {
             get {
-                var initPath = PathMgr.Local("Azurlane.ini");
-                if (!File.Exists(initPath))
-                {
-                    File.WriteAllText(initPath, Properties.Resources.Azurlane);
-                }
                 if (m_Initialization == null)
                 {
+                    var initPath = PathMgr.Local("Azurlane.ini");
+                    var skinsDataPath = PathMgr.Local("Skins.txt");
+
+                    if (File.Exists(initPath))
+                        Update(initPath);
+
+                    if (File.Exists(skinsDataPath))
+                        Update(skinsDataPath);
+
+                    if (!File.Exists(initPath))
+                        File.WriteAllText(initPath, Properties.Resources.Azurlane);
+
+                    if (!File.Exists(skinsDataPath))
+                        File.WriteAllText(skinsDataPath, Properties.Resources.Skins);
+
                     m_Initialization = new Dictionary<string, string>();
                     foreach (var line in File.ReadAllLines(initPath))
                     {
@@ -73,6 +83,15 @@ namespace Azurlane
 
             if (Enemy.IsRemoveSkill)
                 ListOfLua.Add("enemy_data_skill.lua.txt");
+        }
+
+        private static void Update(string path)
+        {
+            if (!File.ReadAllText(path).Contains("v2.6"))
+            {
+                File.Copy(path, string.Concat(Path.GetFileNameWithoutExtension(path), ".old", Path.GetExtension(path)), true);
+                File.Delete(path);
+            }
         }
     }
 }

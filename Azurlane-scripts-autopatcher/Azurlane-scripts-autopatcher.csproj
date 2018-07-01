@@ -45,6 +45,8 @@
     <Compile Include="Configuration\Aircraft.cs" />
     <Compile Include="Configuration\Common.cs" />
     <Compile Include="Configuration\Enemy.cs" />
+    <Compile Include="Configuration\Extra.cs" />
+    <Compile Include="Configuration\Skin.cs" />
     <Compile Include="Configuration\Weapon.cs" />
     <Compile Include="LuaMgr.cs" />
     <Compile Include="PathMgr.cs" />
@@ -70,6 +72,9 @@
     <None Include="Resources\Lock" />
     <None Include="Resources\Salt" />
     <None Include="Resources\Unlock" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Skins.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

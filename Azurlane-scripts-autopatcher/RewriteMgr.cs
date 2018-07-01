@@ -1,4 +1,6 @@
 ﻿using Azurlane.Configuration;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -8,10 +10,17 @@ namespace Azurlane
     {
         internal static void Execute(string mod, string lua)
         {
-            WriteToAircraft(mod, lua);
-            WriteToEnemy(mod, lua);
-            WriteToPlayer(mod, lua);
-            WriteToWeapon(mod, lua);
+            var listOfAction = new List<Action>()
+            {
+                {() => WriteToAircraft(mod, lua)},
+                {() => WriteToEnemy(mod, lua)},
+                {() => WriteToExtra(mod, lua)},
+                {() => WriteToPlayer(lua)},
+                {() => WriteToWeapon(mod, lua)},
+            };
+
+            foreach (var action in listOfAction)
+                action.Invoke();
         }
 
         private static void Rewrite(string path, string pattern, string replacement) => File.WriteAllText(path, Regex.Replace(File.ReadAllText(path), pattern, replacement));
@@ -128,11 +137,28 @@ namespace Azurlane
                 Rewrite(lua, @"skill_list = \{([^\}]+)\}", "skill_list = {}");
             }
         }
-        private static void WriteToPlayer(string mod, string lua)
+
+        private static void WriteToExtra(string mod, string lua)
+        {
+            if (lua.Contains("extraenemy_template") && mod.Contains("weakenemy") && Extra.Hp != 1010011010)
+                Rewrite(lua, "hp = .*,", string.Format("hp = {0},", Enemy.TorpedoGrowth.ToString()));
+        }
+
+        private static void WriteToPlayer(string lua)
         {
             if (lua.Contains("ship_data_statistics") && Player.IsReplaceSkin)
             {
-                // Implemented in the near future
+                foreach (var id in Skin.Id)
+                {
+                    var baseId = id - (id.ToString().EndsWith("1") ? 1 : id.ToString().EndsWith("2") ? 2 : id.ToString().EndsWith("3") ? 3 : id.ToString().EndsWith("4") ? 4 : 5);
+
+                    Rewrite(lua, string.Format("skin_id = {0},", baseId), string.Format("skin_id = {0},", id));
+                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 1), string.Format("skin_id = {0},", id));
+                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 2), string.Format("skin_id = {0},", id));
+                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 3), string.Format("skin_id = {0},", id));
+                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 4), string.Format("skin_id = {0},", id));
+                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 5), string.Format("skin_id = {0},", id));
+                }
             }
         }
 
