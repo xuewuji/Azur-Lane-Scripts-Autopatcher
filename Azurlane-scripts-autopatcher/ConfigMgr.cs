@@ -30,19 +30,12 @@ namespace Azurlane
                 if (m_Initialization == null)
                 {
                     var initPath = PathMgr.Local("Azurlane.ini");
-                    var skinsDataPath = PathMgr.Local("Skins.txt");
 
                     if (File.Exists(initPath))
                         Update(initPath);
 
-                    if (File.Exists(skinsDataPath))
-                        Update(skinsDataPath);
-
                     if (!File.Exists(initPath))
                         File.WriteAllText(initPath, Properties.Resources.Azurlane);
-
-                    if (!File.Exists(skinsDataPath))
-                        File.WriteAllText(skinsDataPath, Properties.Resources.Skins);
 
                     m_Initialization = new Dictionary<string, string>();
                     foreach (var line in File.ReadAllLines(initPath))
@@ -72,14 +65,17 @@ namespace Azurlane
             if (Common.IsCreateGodModeWeakEnemy)
                 ListOfMod.Add("godmode-weakenemy");
 
+            if (Common.IsCreateGodModeDamageWeakEnemy)
+                ListOfMod.Add("godmode-dmg-weakenemy");
+
+            if (Common.IsCreateGodModeDamageCooldownWeakEnemy)
+                ListOfMod.Add("godmode-dmg-cd-weakenemy");
+
             if (Common.IsCreateWeakEnemy)
                 ListOfMod.Add("weakenemy");
 
             if (Common.IsCreateGodModeCooldown || Common.IsCreateGodModeDamage || Common.IsCreateGodModeDamageCooldown)
                 ListOfLua.Add("weapon_property.lua.txt");
-
-            if (Player.IsReplaceSkin)
-                ListOfLua.Add("ship_data_statistics.lua.txt");
 
             if (Enemy.IsRemoveSkill)
                 ListOfLua.Add("enemy_data_skill.lua.txt");
@@ -87,7 +83,7 @@ namespace Azurlane
 
         private static void Update(string path)
         {
-            if (!File.ReadAllText(path).Contains("v2.6"))
+            if (!File.ReadAllText(path).Contains("v2.7"))
             {
                 File.Copy(path, string.Concat(Path.GetFileNameWithoutExtension(path), ".old", Path.GetExtension(path)), true);
                 File.Delete(path);

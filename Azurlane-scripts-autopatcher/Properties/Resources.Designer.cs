@@ -61,23 +61,25 @@ namespace Azurlane.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #Azurlane.ini v2.6
+        ///   Looks up a localized string similar to #Azurlane.ini v2.7
         ///#Ignore meaning no modification will be made towards the said attribute
         ///
         ///[Common]
         ///CreateWeakEnemy=True
         ///CreateGodMode=True
         ///CreateGodModeCooldown=True
+        ///CreateGodModeWeakEnemy=True
         ///CreateGodModeDamage=True
         ///CreateGodModeDamageCooldown=True
-        ///CreateGodModeWeakEnemy=True
+        ///CreateGodModeDamageWeakEnemy=True
+        ///CreateGodModeDamageCooldownWeakEnemy=True
         ///
         ///# ------------------------------------------------------ #
         ///
-        ///[Player]
-        ///# Implemented in the near future #
-        ///PlayerReplaceSkin=False
-        ///Skin=Gridley:101051, Craven:101061, Hammann:101251, Eldridge:101262, Nicholas:101311, San Diego:102081, Cleveland [rest of string was truncated]&quot;;.
+        ///[Aircraft]
+        ///AircraftHp=Ignore
+        ///AircraftHpGrowth=Ignore
+        ///# --- Section Start - Filling these with zero will [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Azurlane {
             get {
@@ -102,49 +104,6 @@ namespace Azurlane.Properties {
             get {
                 object obj = ResourceManager.GetObject("Salt", resourceCulture);
                 return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to USS Gridley 
-        ///Default Skin: 101050
-        ///Xmas Skin: 101051
-        ///
-        ///USS Craven
-        ///Default Skin: 101060
-        ///School Skin: 101061
-        ///
-        ///USS Hammann
-        ///Default Skin: 101250
-        ///Summer Skin: 101251
-        ///
-        ///USS Eldridge
-        ///Default Skin: 101260
-        ///Xmas Skin: 101261
-        ///School Skin: 101262
-        ///
-        ///USS Nicholas
-        ///Default Skin: 101310
-        ///Nurse Skin: 101311
-        ///
-        ///USS San Diego
-        ///Default Skin: 102080
-        ///Xmas Skin: 102081
-        ///
-        ///USS Cleveland
-        ///Default Skin: 102090
-        ///Halloween Skin: 102091
-        ///
-        ///USS Honolulu
-        ///Default Skin: 102120
-        ///School Skin: 102121
-        ///
-        ///USS St.Louis
-        ///Default Sk [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string Skins {
-            get {
-                return ResourceManager.GetString("Skins", resourceCulture);
             }
         }
         

@@ -127,9 +127,6 @@
   <data name="Salt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Salt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Skins" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Skins.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="Unlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Unlock;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

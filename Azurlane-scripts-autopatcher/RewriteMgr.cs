@@ -15,7 +15,6 @@ namespace Azurlane
                 {() => WriteToAircraft(mod, lua)},
                 {() => WriteToEnemy(mod, lua)},
                 {() => WriteToExtra(mod, lua)},
-                {() => WriteToPlayer(lua)},
                 {() => WriteToWeapon(mod, lua)},
             };
 
@@ -142,24 +141,6 @@ namespace Azurlane
         {
             if (lua.Contains("extraenemy_template") && mod.Contains("weakenemy") && Extra.Hp != 1010011010)
                 Rewrite(lua, "hp = .*,", string.Format("hp = {0},", Enemy.TorpedoGrowth.ToString()));
-        }
-
-        private static void WriteToPlayer(string lua)
-        {
-            if (lua.Contains("ship_data_statistics") && Player.IsReplaceSkin)
-            {
-                foreach (var id in Skin.Id)
-                {
-                    var baseId = id - (id.ToString().EndsWith("1") ? 1 : id.ToString().EndsWith("2") ? 2 : id.ToString().EndsWith("3") ? 3 : id.ToString().EndsWith("4") ? 4 : 5);
-
-                    Rewrite(lua, string.Format("skin_id = {0},", baseId), string.Format("skin_id = {0},", id));
-                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 1), string.Format("skin_id = {0},", id));
-                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 2), string.Format("skin_id = {0},", id));
-                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 3), string.Format("skin_id = {0},", id));
-                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 4), string.Format("skin_id = {0},", id));
-                    Rewrite(lua, string.Format("skin_id = {0},", baseId + 5), string.Format("skin_id = {0},", id));
-                }
-            }
         }
 
         private static void WriteToWeapon(string mod, string lua)
