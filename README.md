@@ -1,5 +1,5 @@
 # Azurlane-scripts-autopatcher
-Automated tool that will save your time to modify Azurlane scripts, resulting several modified scripts such as:
+Automated tool that will save your time to modify Azur Lane scripts, resulting several modified scripts such as:
 - godmode
 - godmode-cd
 - godmode-dmg
