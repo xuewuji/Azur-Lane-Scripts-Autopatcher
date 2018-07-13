@@ -38,12 +38,14 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssetBundleMgr.cs" />
     <Compile Include="ConfigMgr.cs" />
     <Compile Include="Configuration\Aircraft.cs" />
     <Compile Include="Configuration\Common.cs" />
+    <Compile Include="Configuration\Debug.cs" />
     <Compile Include="Configuration\Enemy.cs" />
     <Compile Include="Configuration\Extra.cs" />
     <Compile Include="Configuration\Weapon.cs" />

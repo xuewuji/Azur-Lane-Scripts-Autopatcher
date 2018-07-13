@@ -50,28 +50,28 @@ namespace Azurlane
 
         internal static void Initialize()
         {
-            if (Common.IsCreateGodMode)
+            if (Common.IsCreateGodMode && !Debug.IsDebugMode)
                 ListOfMod.Add("godmode");
 
-            if (Common.IsCreateGodModeCooldown)
+            if (Common.IsCreateGodModeCooldown && !Debug.IsDebugMode)
                 ListOfMod.Add("godmode-cd");
 
-            if (Common.IsCreateGodModeDamage)
+            if (Common.IsCreateGodModeDamage && !Debug.IsDebugMode)
                 ListOfMod.Add("godmode-dmg");
 
-            if (Common.IsCreateGodModeDamageCooldown)
+            if (Common.IsCreateGodModeDamageCooldown && !Debug.IsDebugMode)
                 ListOfMod.Add("godmode-dmg-cd");
 
-            if (Common.IsCreateGodModeWeakEnemy)
+            if (Common.IsCreateGodModeWeakEnemy && !Debug.IsDebugMode)
                 ListOfMod.Add("godmode-weakenemy");
 
-            if (Common.IsCreateGodModeDamageWeakEnemy)
+            if (Common.IsCreateGodModeDamageWeakEnemy && !Debug.IsDebugMode)
                 ListOfMod.Add("godmode-dmg-weakenemy");
 
             if (Common.IsCreateGodModeDamageCooldownWeakEnemy)
                 ListOfMod.Add("godmode-dmg-cd-weakenemy");
 
-            if (Common.IsCreateWeakEnemy)
+            if (Common.IsCreateWeakEnemy && !Debug.IsDebugMode)
                 ListOfMod.Add("weakenemy");
 
             if (Common.IsCreateGodModeCooldown || Common.IsCreateGodModeDamage || Common.IsCreateGodModeDamageCooldown)
@@ -83,7 +83,7 @@ namespace Azurlane
 
         private static void Update(string path)
         {
-            if (!File.ReadAllText(path).Contains("v2.7"))
+            if (!File.ReadAllText(path).Contains("v2.7.1"))
             {
                 File.Copy(path, string.Concat(Path.GetFileNameWithoutExtension(path), ".old", Path.GetExtension(path)), true);
                 File.Delete(path);

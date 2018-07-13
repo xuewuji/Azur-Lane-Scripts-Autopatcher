@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Azurlane.Configuration;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
@@ -24,10 +25,13 @@ namespace Azurlane
             if (File.Exists(PathMgr.Temporary(fileName))) File.Delete(PathMgr.Temporary(fileName));
             if (Directory.Exists(PathMgr.Lua(fileName).Replace("\\CAB-android", ""))) Utils.DeleteDirectory(PathMgr.Lua(fileName).Replace("\\CAB-android", ""));
 
-            foreach (var mod in ConfigMgr.ListOfMod)
+            if (!Debug.IsDebugMode)
             {
-                if (File.Exists(PathMgr.Temporary(mod))) File.Delete(PathMgr.Temporary(mod));
-                if (Directory.Exists(PathMgr.Lua(mod).Replace("\\CAB-android", ""))) Utils.DeleteDirectory(PathMgr.Lua(mod).Replace("\\CAB-android", ""));
+                foreach (var mod in ConfigMgr.ListOfMod)
+                {
+                    if (File.Exists(PathMgr.Temporary(mod))) File.Delete(PathMgr.Temporary(mod));
+                    if (Directory.Exists(PathMgr.Lua(mod).Replace("\\CAB-android", ""))) Utils.DeleteDirectory(PathMgr.Lua(mod).Replace("\\CAB-android", ""));
+                }
             }
         }
 
@@ -85,7 +89,6 @@ namespace Azurlane
             Clean(fileName);
 
             var index = 1;
-
             var listOfAction = new List<Action>()
             {
                 {
@@ -137,9 +140,12 @@ namespace Azurlane
                         {
                             if (!Directory.Exists(PathMgr.Lua(mod)))
                                 Directory.CreateDirectory(PathMgr.Lua(mod));
+
                             foreach (var lua in ConfigMgr.ListOfLua)
                                 File.Copy(PathMgr.Lua(fileName, lua), PathMgr.Lua(mod, lua), true);
-                            File.Copy(PathMgr.Temporary(fileName), PathMgr.Temporary(mod), true);
+
+                            if (!Debug.IsDebugMode)
+                                File.Copy(PathMgr.Temporary(fileName), PathMgr.Temporary(mod), true);
                         }
                     }
                 },
@@ -180,11 +186,13 @@ namespace Azurlane
                     () =>
                     {
                         Console.Write("[+] Repacking AssetBundle...");
-                        foreach (var mod in ConfigMgr.ListOfMod)
-                        {
-                            Console.Write($" {index}/{ConfigMgr.ListOfMod.Count}");
-                            AssetBundleMgr.Execute(PathMgr.Temporary(mod), Tasks.Repack);
-                            index++;
+                        if (!Debug.IsDebugMode) {
+                            foreach (var mod in ConfigMgr.ListOfMod)
+                            {
+                                Console.Write($" {index}/{ConfigMgr.ListOfMod.Count}");
+                                AssetBundleMgr.Execute(PathMgr.Temporary(mod), Tasks.Repack);
+                                index++;
+                            }
                         }
                     }
                 },
@@ -192,24 +200,31 @@ namespace Azurlane
                     () =>
                     {
                         Console.Write("[+] Encrypting AssetBundle...");
-                        foreach (var mod in ConfigMgr.ListOfMod)
-                            AssetBundleMgr.Execute(PathMgr.Temporary(mod), Tasks.Encrypt);
+                        if (!Debug.IsDebugMode) {
+                            foreach (var mod in ConfigMgr.ListOfMod)
+                                AssetBundleMgr.Execute(PathMgr.Temporary(mod), Tasks.Encrypt);
+                        }
                     }
                 },
                 {
                     () =>
                     {
                         Console.Write("[+] Copying modified AssetBundle to original location...");
-                        foreach (var mod in ConfigMgr.ListOfMod)
-                        {
-                            if (File.Exists(Path.Combine(fileDirectoryPath, mod)))
-                                File.Delete(Path.Combine(fileDirectoryPath, mod));
+                        if (!Debug.IsDebugMode) {
+                            foreach (var mod in ConfigMgr.ListOfMod)
+                            {
+                                if (File.Exists(Path.Combine(fileDirectoryPath, mod)))
+                                    File.Delete(Path.Combine(fileDirectoryPath, mod));
 
-                            File.Copy(PathMgr.Temporary(mod), Path.Combine(fileDirectoryPath, mod));
+                                File.Copy(PathMgr.Temporary(mod), Path.Combine(fileDirectoryPath, mod));
+                            }
                         }
                     }
                 }
             };
+
+            if (Debug.IsDebugMode)
+                Console.Write("[!] Debug Mode Is Active\n");
 
             try
             {
@@ -232,6 +247,20 @@ namespace Azurlane
             }
             finally
             {
+                if (Debug.IsDebugMode)
+                {
+                    Console.Write("[!] Creating debug.zip");
+                    Utils.CreateZip("debug.zip", PathMgr.Local("Azurlane.ini"));
+                    if (File.Exists(PathMgr.Local("Logs.txt")))
+                        Utils.CreateZip("debug.zip", PathMgr.Local("Logs.txt"));
+                    foreach (var mod in ConfigMgr.ListOfMod)
+                    {
+                        foreach (var lua in ConfigMgr.ListOfLua)
+                            Utils.CreateZip("debug.zip", PathMgr.Lua(mod, lua));
+                    }
+                    Console.Write(" <Done>\n");
+                }
+
                 Console.Write("[!] Cleaning...");
                 Clean(fileName);
                 Console.Write(" <Done>\n");
