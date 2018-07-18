@@ -156,7 +156,7 @@ namespace Azurlane
                                 Utils.pInfof("Decrypting Lua...");
                                 foreach (var lua in ListOfLua) {
                                     Utils.NewCommand(string.Format("Azcli.exe --unlock \"{0}\"", PathMgr.Lua(fileName, lua)));
-                                    if (LuaMgr.CheckLuaState(PathMgr.Lua(fileName, lua)) == LuaMgr.State.Decrypted) {
+                                    if (LuaMgr.CheckLuaState(PathMgr.Lua(fileName, lua)) == LuaMgr.State.Encrypted) {
                                         Utils.pDebugln(string.Format("Failed to decrypt {0}", Path.GetFileName(lua)));
                                         showDoneMessage = false;
                                     }
