@@ -61,59 +61,30 @@ namespace Azurlane.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #Azurlane.ini v2.7
-        ///#Ignore meaning no modification will be made towards the said attribute
+        ///   Looks up a localized string similar to Version=2.8.0
+        ///GenerateDebugZip=True
         ///
-        ///[Common]
-        ///CreateWeakEnemy=True
-        ///CreateGodMode=True
-        ///CreateGodModeCooldown=True
-        ///CreateGodModeWeakEnemy=True
-        ///CreateGodModeDamage=True
-        ///CreateGodModeDamageCooldown=True
-        ///CreateGodModeDamageWeakEnemy=True
-        ///CreateGodModeDamageCooldownWeakEnemy=True
+        ///[Path]
+        ///Temporary_Folder=temp
+        ///Thirdparty_Folder=3rdparty
         ///
-        ///# ------------------------------------------------------ #
+        ///[Mod]
+        ///Godmode=true
+        ///Weakenemy=true
+        ///Godmode_Damage=true
+        ///Godmode_Cooldown=true
+        ///Godmode_Weakenemy=true
+        ///Godmode_Damage_Cooldown=true
+        ///Godmode_Damage_Weakenemy=true
+        ///Godmode_Damage_Cooldown_Weakenemy=true
         ///
-        ///[Aircraft]
-        ///AircraftHp=Ignore
-        ///AircraftHpGrowth=Ignore
-        ///# --- Section Start - Filling these with zero will [rest of string was truncated]&quot;;.
+        ///[Skin]
+        ///Replace_Skin=False
+        ///SkinId=Gridley:101051, Craven:101061, Laffey:101172, Hammann:101251, Eldridge:101262, Nicholas:101311, San Diego:102081, Cleveland:102091, Honolulu:102121, St.Louis:102131, Lo [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Azurlane {
+        internal static string Configuration {
             get {
-                return ResourceManager.GetString("Azurlane", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Lock {
-            get {
-                object obj = ResourceManager.GetObject("Lock", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Salt {
-            get {
-                object obj = ResourceManager.GetObject("Salt", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Unlock {
-            get {
-                object obj = ResourceManager.GetObject("Unlock", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("Configuration", resourceCulture);
             }
         }
     }

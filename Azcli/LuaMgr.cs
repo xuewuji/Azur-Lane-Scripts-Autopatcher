@@ -6,19 +6,69 @@ namespace Azurlane
 {
     internal static class LuaMgr
     {
-        internal static void Execute(string path, Tasks task)
+        internal static int SuccessCount, FailedCount;
+
+        internal enum State
+        {
+            None,
+            Encrypted,
+            Decrypted
+        }
+
+        internal static void CheckAndExecute(string lua, Tasks task)
+        {
+            var bytes = File.ReadAllBytes(lua);
+            var state = State.None;
+
+            if (bytes[3] == 0x80)
+            {
+                state = State.Encrypted;
+                if (task == Tasks.Encrypt)
+                {
+                    Utils.pInfoln(string.Format("{0} is already encrypted... <Aborted>", Path.GetFileName(lua)));
+                    return;
+                }
+                else if (task == Tasks.Decompile)
+                {
+                    Execute(lua, bytes, Tasks.Decrypt, state);
+                }
+            }
+            else if (bytes[3] == 0x02)
+            {
+                state = State.Decrypted;
+                if (task == Tasks.Decrypt)
+                {
+                    Utils.pInfoln(string.Format("{0} is already decrypted... <Aborted>", Path.GetFileName(lua)));
+                    return;
+                }
+            }
+            else if (task != Tasks.Recompile)
+            {
+                Utils.pInfoln("Not a valid or damaged lua file... <Aborted>");
+                return;
+            }
+
+            if (task == Tasks.Decrypt || task == Tasks.Encrypt)
+            {
+                Execute(lua, bytes, task, state);
+            }
+            else if (task == Tasks.Decompile || task == Tasks.Recompile)
+            {
+                Execute(lua, task);
+            }
+            Program.isInvalid = false;
+        }
+
+        private static void Execute(string lua, byte[] bytes, Tasks task, State state)
         {
             try
             {
-                var bytes = File.ReadAllBytes(path);
-
-                if ((bytes[3] == 0x02 && task == Tasks.Decrypt) || (bytes[3] == 0x80 && task == Tasks.Encrypt))
-                    return;
-
-                if (task == Tasks.Decrypt || task == Tasks.Encrypt)
+                Utils.pInfof(string.Format("{0} {1}...", (task == Tasks.Decrypt ? "Decrypting" : "Encrypting"), Path.GetFileName(lua)));
+                using (var stream = new MemoryStream(bytes))
                 {
-                    using (var reader = new BinaryReader(new MemoryStream(bytes)))
+                    using (var reader = new BinaryReader(stream))
                     {
+                        // ljd\rawdump\header.py + Perfare
                         var magic = reader.ReadBytes(3);
                         var version = reader.ReadByte();
                         var bits = reader.ReadUleb128();
@@ -46,32 +96,43 @@ namespace Azurlane
                             var complex_constants_count = reader.ReadUleb128();
                             var numeric_constants_count = reader.ReadUleb128();
                             var instructions_count = reader.ReadUleb128();
+
                             var start = (int)reader.BaseStream.Position;
 
-                            if (bytes[3] == 0x02 && task == Tasks.Encrypt)
+                            if (state == State.Encrypted && task == Tasks.Decrypt)
+                            {
+                                bytes[3] = 0x02;
+                                bytes = Unlock(start, bytes, (int)instructions_count);
+                            }
+                            else if (state == State.Decrypted && task == Tasks.Encrypt)
                             {
                                 bytes[3] = 0x80;
                                 bytes = Lock(start, bytes, (int)instructions_count);
                             }
-                            else if (bytes[3] == 0x80 && task == Tasks.Decrypt)
-                            {
-                                bytes[3] = 2;
-                                bytes = Unlock(start, bytes, (int)instructions_count);
-                            }
+                            else break;
 
                             reader.BaseStream.Position = next;
                         }
                     }
-                    File.WriteAllBytes(path, bytes);
                 }
-                else if (task == Tasks.Decompile || task == Tasks.Recompile)
-                {
-                    Utils.Command(task == Tasks.Decompile ? $"python main.py -f \"{path}\" -o \"{path}\"" : $"luajit.exe -b \"{path}\" \"{path}\"");
-                }
+                File.WriteAllBytes(lua, bytes);
             }
             catch (Exception e)
             {
-                Utils.Log($"Exception detected during {(task == Tasks.Decrypt ? "decrypting" : task == Tasks.Encrypt ? "encrypting" : task == Tasks.Decompile ? "decompiling" : "recompiling")} {Path.GetFileName(path)}", e);
+                Utils.eLogger(string.Format("Exception detected during {0} {1}", (task == Tasks.Decrypt ? "decrypting" : "encrypting"), Path.GetFileName(lua)), e);
+            }
+        }
+
+        private static void Execute(string lua, Tasks task)
+        {
+            Utils.pInfof(string.Format("{0} {1}...", (task == Tasks.Decompile ? "Decompiling" : "Recompiling"), Path.GetFileName(lua)));
+            try
+            {
+                Utils.NewCommand(task == Tasks.Decompile ? $"python main.py -f \"{lua}\" -o \"{lua}\"" : $"luajit.exe -b \"{lua}\" \"{lua}\"");
+            }
+            catch (Exception e)
+            {
+                Utils.eLogger(string.Format("Exception detected during {0} {1}", (task == Tasks.Decompile ? "decompiling" : "recompiling"), Path.GetFileName(lua)), e);
             }
         }
 
@@ -93,6 +154,7 @@ namespace Azurlane
 
         private static uint ReadUleb128(this BinaryReader reader)
         {
+            // ljd\util\binstream.py + Perfare
             uint value = reader.ReadByte();
             if (value >= 0x80)
             {

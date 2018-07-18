@@ -4,19 +4,20 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8F51A110-ABAD-42C0-A830-E78049F02A34}</ProjectGuid>
+    <ProjectGuid>{6E3BECDF-F4E7-4A25-B29B-67E7AC4B0A45}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Azurlane</RootNamespace>
-    <AssemblyName>Azurlane</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyName>Azcli</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Azur-Lane-Scripts-Autopatcher\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Azur-Lane-Scripts-Autopatcher\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,23 +34,18 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssetBundleMgr.cs" />
     <Compile Include="ConfigMgr.cs" />
-    <Compile Include="Configuration\Aircraft.cs" />
-    <Compile Include="Configuration\Common.cs" />
-    <Compile Include="Configuration\Debug.cs" />
-    <Compile Include="Configuration\Enemy.cs" />
-    <Compile Include="Configuration\Extra.cs" />
-    <Compile Include="Configuration\Weapon.cs" />
     <Compile Include="LuaMgr.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="PathMgr.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,20 +54,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RewriteMgr.cs" />
     <Compile Include="Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Lock" />
+    <None Include="Resources\Salt" />
+    <None Include="Resources\Unlock" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Azurlane.ini" />
-    <None Include="Resources\Lock" />
-    <None Include="Resources\Salt" />
-    <None Include="Resources\Unlock" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

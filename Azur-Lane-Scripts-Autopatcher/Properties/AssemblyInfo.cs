@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Azurlane-scripts-autopatcher")]
-[assembly: AssemblyDescription("https://github.com/k0np4ku")]
+[assembly: AssemblyTitle("Azur-Lane-Scripts-Autopatcher")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Azurlane-scripts-autopatcher")]
+[assembly: AssemblyProduct("Azur-Lane-Scripts-Autopatcher")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8f51a110-abad-42c0-a830-e78049f02a34")]
+[assembly: Guid("e8ba395a-536d-4752-b99c-e7c9d7540a16")]
 
 // Version information for an assembly consists of the following four values:
 //
