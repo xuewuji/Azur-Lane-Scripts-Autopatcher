@@ -2,7 +2,7 @@
 Automated tool that will help you to save your precious time when modifying Azur Lane scripts.
 
 ## System Requirements
-1. NET Framework 4.5 or newer
+1. NET Framework 4.5.1 or newer
 2. Python 3.0 or newer
 
 ## How to Use
