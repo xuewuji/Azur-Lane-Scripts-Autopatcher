@@ -62,7 +62,7 @@ namespace Azurlane.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Version=2.8.0
-        ///GenerateDebugZip=True
+        ///GenerateDebugZip=False
         ///
         ///[Path]
         ///Temporary_Folder=temp
@@ -80,7 +80,7 @@ namespace Azurlane.Properties {
         ///
         ///[Skin]
         ///Replace_Skin=False
-        ///SkinId=Gridley:101051, Craven:101061, Laffey:101172, Hammann:101251, Eldridge:101262, Nicholas:101311, San Diego:102081, Cleveland:102091, Honolulu:102121, St.Louis:102131, Lo [rest of string was truncated]&quot;;.
+        ///SkinId=Gridley:101051, Craven:101061, Laffey:101172, Hammann:101251, Eldridge:101262, Nicholas:101311, San Diego:102081, Cleveland:102091, Honolulu:102121, St.Louis:102131, L [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Configuration {
             get {
