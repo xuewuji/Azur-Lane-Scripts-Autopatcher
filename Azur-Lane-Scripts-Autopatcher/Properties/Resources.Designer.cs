@@ -61,8 +61,8 @@ namespace Azurlane.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version=2.8.0
-        ///GenerateDebugZip=False
+        ///   Looks up a localized string similar to Version=2.8.2
+        ///GenerateDebugZip=false
         ///
         ///[Path]
         ///Temporary_Folder=temp
@@ -78,9 +78,24 @@ namespace Azurlane.Properties {
         ///Godmode_Damage_Weakenemy=true
         ///Godmode_Damage_Cooldown_Weakenemy=true
         ///
-        ///[Skin]
-        ///Replace_Skin=False
-        ///SkinId=Gridley:101051, Craven:101061, Laffey:101172, Hammann:101251, Eldridge:101262, Nicholas:101311, San Diego:102081, Cleveland:102091, Honolulu:102121, St.Louis:102131, L [rest of string was truncated]&quot;;.
+        ///[Aircraft]
+        ///Hp=ignore
+        ///HpGrowth=ignore
+        ///Accuracy=0
+        ///AccuracyGrowth=0
+        ///AttackPower=0
+        ///AttackPowerGrowth=0
+        ///CrashDamage=0
+        ///Speed=ignore
+        ///
+        ///[Weapon]
+        ///Damage=300
+        ///ReloadMax=120
+        ///
+        ///[Enemy]
+        ///AntiAir=ignore
+        ///AntiAirGrowth=ignore
+        ///AntiSubmarine [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Configuration {
             get {
