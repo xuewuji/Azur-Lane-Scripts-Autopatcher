@@ -123,7 +123,7 @@ namespace Azurlane
 
         private static void Update(string path)
         {
-            if (!File.ReadAllText(path).Contains("2.8.0"))
+            if (!File.ReadAllText(path).Contains("2.8.2"))
             {
                 File.Copy(path, string.Concat(Path.GetFileNameWithoutExtension(path), ".old", Path.GetExtension(path)), true);
                 File.Delete(path);
