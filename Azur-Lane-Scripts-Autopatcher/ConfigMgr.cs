@@ -67,23 +67,26 @@ namespace Azurlane
             if (IsCreateGodMode)
                 Program.ListOfMod.Add("godmode");
 
-            if (IsCreateGodModeCooldown)
-                Program.ListOfMod.Add("godmode-cooldown");
+            if (IsCreateWeakEnemy)
+                Program.ListOfMod.Add("weakenemy");
 
             if (IsCreateGodModeDamage)
                 Program.ListOfMod.Add("godmode-damage");
 
-            if (IsCreateGodModeDamageCooldown)
-                Program.ListOfMod.Add("godmode-damage-cooldown");
-
-            if (IsCreateGodModeDamageCooldownWeakEnemy)
-                Program.ListOfMod.Add("godmode-damage-cooldown-weakenemy");
+            if (IsCreateGodModeCooldown)
+                Program.ListOfMod.Add("godmode-cooldown");
 
             if (IsCreateGodModeWeakEnemy)
                 Program.ListOfMod.Add("godmode-weakenemy");
 
-            if (IsCreateWeakEnemy)
-                Program.ListOfMod.Add("weakenemy");
+            if (IsCreateGodModeDamageCooldown)
+                Program.ListOfMod.Add("godmode-damage-cooldown");
+
+            if (IsCreateGodModeDamageWeakEnemy)
+                Program.ListOfMod.Add("godmode-damage-weakenemy");
+
+            if (IsCreateGodModeDamageCooldownWeakEnemy)
+                Program.ListOfMod.Add("godmode-damage-cooldown-weakenemy");
 
             if (IsCreateGodModeCooldown || IsCreateGodModeDamage || IsCreateGodModeDamageCooldown || IsCreateGodModeDamageCooldownWeakEnemy)
                 Program.ListOfLua.Add("weapon_property.lua.txt");
