@@ -6,6 +6,11 @@ Automated tool that will help you to save your precious time when modifying Azur
 2. Python 3.7.0 with "Add Python 3.7 to PATH" option enabled https://www.python.org/ftp/python/3.7.0/python-3.7.0.exe
 3. (Skip if "Add Python 3.7 to PATH" option is enabled) Added Python's directory into System Environment Variables named **Path** https://docs.python.org/3/using/windows.html#configuring-python)
 
+## Download
+You must be new to the internet if you don't even know where to get the binary. Listen here you dipshit, do me a favor by fucking fuck yourself and begone from this github at once.
+
+I've had enough of spoonfeeding a fucking brainlet who couldn't even find the solution by themself.
+
 ## How to Use
 Open `Azurlane.exe` and import *Azur Lane AssetBundle file* named **scripts**
 
