@@ -26,6 +26,8 @@ AssetBundle extractor (UnityEx.exe) will not working properly when your System L
 ### Game Stuck onload
 This issue will only happens if you're playing China (bilibili) version of the game, simply do the following step to fix this issue.
 
-Use DnSpy to import game's dll file named Assembly-CSharp.dll, then search LuaScriptMgr and edit a method named Load(Action) and remove lines shown in the picture (see below).
+~Use DnSpy to import game's dll file named Assembly-CSharp.dll, then search LuaScriptMgr and edit a method named Load(Action) and remove lines shown in the picture (see below).~
 
 ![DnSpy](https://a.safe.moe/OQevw5S.png)
+
+Watch this [video](https://a.doko.moe/lqyacf.mp4).
