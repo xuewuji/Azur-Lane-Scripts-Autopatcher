@@ -23,4 +23,12 @@ This issue will only happens if you're playing China (bilibili) version of the g
 
 Use DnSpy to import game's dll file named Assembly-CSharp.dll, then search LuaScriptMgr and edit a method named Load(Action) and remove lines shown in the picture (see below).
 
-![DnSpy](https://a.safe.moe/OQevw5S.png)
+WWWLoader.Inst.LoadFile(luaName, delegate(byte[] bytes)
+{
+        bytes = SaltAdapter.Make(System.IO.File.Exists(System.IO.Path.Combine(Application.persistentDataPath, "scripts")) System.IO.File.ReadAllBytes(System.IO.Path.Combine(Application.persistentDataPath, "scripts")) : bytes, false);
+        this.StartCoroutine(this.LoadABFromBytes(bytes, delegate(AssetBundle ab)
+        {
+                luaBundle = ab;
+                callback();
+        }));
+});
